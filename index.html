@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="todo-list">
+        <h1>Your Todo List</h1>
+        <div id="tasks-container"></div>
+        <div class="add-new-task">
+            <input type="text" placeholder="Add a new task...">
+            <button class="add-btn" onclick="addTodo()">Add</button>
+        </div>  
+    </div>
+    <script src="https://kit.fontawesome.com/e9047edaf5.js" crossorigin="anonymous"></script>
+    <script>
+        let ctr = 1;
+
+        function addTodo(){
+            const inputEl = document.querySelector("input");
+            const value = inputEl.value;
+
+            const charCount = value.length;
+
+            if (charCount === 0) {
+                alert("Task cannot be empty.");
+                return;
+            } else if (charCount > 50) {
+                alert("Task is too long. Please keep it under 50 characters.");
+                return; 
+            }
+
+            const newDivEl = document.createElement("div");
+            newDivEl.classList.add("todo-item");
+            newDivEl.setAttribute("id", "todo-" + ctr);
+            newDivEl.innerHTML = `<span>${value}</span>
+                                    <button onclick="editTodo(${ctr})"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button onclick="deleteTodo(${ctr})">X</button>`;
+            
+            document.getElementById("tasks-container").appendChild(newDivEl);
+            ctr+=1;
+            inputEl.value = '';
+        }
+
+        function deleteTodo(index){
+            const element = document.getElementById(`todo-${index}`);
+            element.parentNode.removeChild(element);
+        }
+
+        function editTodo(index){
+            const element = document.getElementById(`todo-${index}`);
+            const spanEl = element.querySelector("span");
+
+            const originalText = spanEl.textContent;
+            spanEl.innerHTML = `<input type="text" value="${originalText}">`;
+
+            const editButton = element.querySelector("button:first-of-type");
+            editButton.textContent = "Save";
+            editButton.onclick = function(){
+                saveEdit(index);
+            }
+        }
+
+        function saveEdit(index){
+            const element = document.getElementById(`todo-${index}`);
+            const inputEl = element.querySelector("input");
+
+            const newText = inputEl.value.trim();
+            if(newText !== ""){
+                const spanEl = element.querySelector("span");
+                spanEl.textContent = newText;
+
+                const saveButton = element.querySelector("button:first-of-type");
+                saveButton.innerHTML = `<i class="fa-solid fa-pen-to-square"></i>`;
+                saveButton.onclick = function() { editTodo(index); };
+            } else {
+                alert("Task cannot be empty.");
+            }
+        }
+    </script>
+</body>
+</html>
