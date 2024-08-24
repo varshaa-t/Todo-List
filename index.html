@@ -33,14 +33,28 @@
                 return; 
             }
 
+            const currentId = ctr;
+
             const newDivEl = document.createElement("div");
             newDivEl.classList.add("todo-item");
-            newDivEl.setAttribute("id", "todo-" + ctr);
-            newDivEl.innerHTML = `<span>${value}</span>
-                                    <button onclick="editTodo(${ctr})"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button onclick="deleteTodo(${ctr})">X</button>`;
+            newDivEl.setAttribute("id", "todo-" + currentId);
+
+            const spanEl = document.createElement("span");
+            const editButtonEl = document.createElement("button");
+            const buttonEl = document.createElement("button");
+
+            spanEl.textContent = value;
+            editButtonEl.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+            editButtonEl.onclick = function(){ editTodo(currentId); };
+            buttonEl.textContent = "X";
+            buttonEl.onclick = function(){ deleteTodo(currentId); };
             
+            newDivEl.appendChild(spanEl);
+            newDivEl.appendChild(editButtonEl);
+            newDivEl.appendChild(buttonEl);
+
             document.getElementById("tasks-container").appendChild(newDivEl);
+
             ctr+=1;
             inputEl.value = '';
         }
@@ -57,7 +71,7 @@
             const originalText = spanEl.textContent;
             spanEl.innerHTML = `<input type="text" value="${originalText}">`;
 
-            const editButton = element.querySelector("button:first-of-type");
+            const editButton = element.querySelectorAll("button")[0];
             editButton.textContent = "Save";
             editButton.onclick = function(){
                 saveEdit(index);
